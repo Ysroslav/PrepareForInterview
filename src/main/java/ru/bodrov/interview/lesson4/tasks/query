@@ -1,0 +1,64 @@
+SELECT tab1.name_film, tab1.time_begin, tab1.long_film,
+       tab2.name_film, tab2.time_begin, tab2.long_film
+FROM
+(SELECT f.id, f.name_film, f.long_film, s.time_begin,
+        date_add(s.time_begin, INTERVAL f.long_film MINUTE) time_end, s.day_begin
+FROM tbl_film f
+INNER JOIN tbl_session s ON f.id = s.film_id) tab1
+INNER JOIN
+(SELECT f.id, f.name_film, f.long_film, s.time_begin,
+        date_add(s.time_begin, INTERVAL f.long_film MINUTE) time_end, s.day_begin
+FROM
+tbl_film f INNER JOIN tbl_session s ON f.id = s.film_id) tab2
+                                    ON tab1.day_begin = tab2.day_begin
+                                       AND tab1.id !=tab2.id
+                                       AND tab1.time_end>tab2.time_begin
+                                       AND tab1.time_begin<tab2.time_end
+WHERE tab1.time_begin>tab2.time_begin
+ORDER BY TIMESTAMPDIFF(MINUTE, tab1.time_end, tab2.time_begin) DESC
+
+----------------------------------------------------------------------------------------------------
+
+SELECT tab1.name_film, tab1.time_begin, tab1.long_film,
+       tab2.time_begin, tab2.long_film, TIMESTAMPDIFF(MINUTE, tab1.time_end, tab2.time_begin) period
+FROM
+(SELECT f.id, f.name_film, f.long_film, s.time_begin, date_add(s.time_begin, INTERVAL f.long_film MINUTE) time_end, s.day_begin
+FROM tbl_film f
+INNER JOIN tbl_session s ON f.id = s.film_id) tab1
+INNER JOIN
+(SELECT f.id, f.name_film, f.long_film, s.time_begin, date_add(s.time_begin, INTERVAL f.long_film MINUTE) time_end, s.day_begin
+FROM tbl_film f INNER JOIN tbl_session s ON f.id = s.film_id) tab2
+ON tab1.day_begin = tab2.day_begin
+AND tab1.id !=tab2.id
+WHERE TIMESTAMPDIFF(MINUTE, tab1.time_end, tab2.time_begin)>30
+ORDER BY TIMESTAMPDIFF(MINUTE, tab1.time_end, tab2.time_begin) DESC
+
+--------------------------------------------------------------------------------------------------
+
+SELECT f.name_film, COUNT(t.place), COUNT(t.place)/COUNT(DISTINCT s.id), SUM(price)
+FROM tbl_film f
+INNER JOIN tbl_session s ON f.id = s.film_id
+INNER JOIN tbl_ticet t ON s.id = t.session_id
+WHERE t.sold = true
+GROUP BY f.name_film WITH ROLLUP
+
+
+-------------------------------------------------------------------------------------------------
+
+
+SELECT tab.time_term, COUNT(tab.place), SUM(tab.price)
+FROM
+(SELECT t.place, t.price,
+CASE
+  WHEN HOUR(s.time_begin)<9 THEN '1.0-9'
+  WHEN HOUR(s.time_begin)<15 AND HOUR(s.time_begin) >= 9  THEN '2.9-15'
+  WHEN HOUR(s.time_begin)<18 AND HOUR(s.time_begin) >= 15 THEN '3.15-18'
+  WHEN HOUR(s.time_begin)<21 AND HOUR(s.time_begin) >= 18  THEN '4.18-21'
+  ELSE '5.21-00'
+END time_term
+FROM tbl_film f
+INNER JOIN tbl_session s ON f.id = s.film_id
+INNER JOIN tbl_ticet t ON s.id = t.session_id
+WHERE t.sold = true) tab
+GROUP BY tab.time_term
+ORDER BY tab.time_term
