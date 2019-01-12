@@ -1,0 +1,195 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.2
+-- https://www.phpmyadmin.net/
+--
+-- Хост: 127.0.0.1
+-- Время создания: Янв 13 2019 г., 00:10
+-- Версия сервера: 10.1.34-MariaDB
+-- Версия PHP: 7.2.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- База данных: `db_cinema`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `tbl_film`
+--
+
+CREATE TABLE `tbl_film` (
+  `id` int(11) NOT NULL,
+  `name_film` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `long_film` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Дамп данных таблицы `tbl_film`
+--
+
+INSERT INTO `tbl_film` (`id`, `name_film`, `long_film`) VALUES
+(1, 'film1', 120),
+(2, 'film2', 90),
+(3, 'film3', 120),
+(4, 'film4', 60),
+(5, 'film5', 120);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `tbl_session`
+--
+
+CREATE TABLE `tbl_session` (
+  `id` int(11) NOT NULL,
+  `time_begin` time DEFAULT NULL,
+  `day_begin` date DEFAULT NULL,
+  `film_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Дамп данных таблицы `tbl_session`
+--
+
+INSERT INTO `tbl_session` (`id`, `time_begin`, `day_begin`, `film_id`) VALUES
+(1, '09:00:00', '2019-01-12', 2),
+(2, '09:30:00', '2019-01-12', 1),
+(3, '14:45:00', '2019-01-12', 5),
+(4, '15:00:00', '2019-01-12', 4),
+(5, '17:30:00', '2019-01-12', 3),
+(6, '19:00:00', '2019-01-12', 1),
+(7, '22:30:00', '2019-01-12', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `tbl_ticet`
+--
+
+CREATE TABLE `tbl_ticet` (
+  `id` int(11) NOT NULL,
+  `session_id` int(11) DEFAULT NULL,
+  `price` decimal(6,4) DEFAULT NULL,
+  `place` int(11) DEFAULT NULL,
+  `sold` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Дамп данных таблицы `tbl_ticet`
+--
+
+INSERT INTO `tbl_ticet` (`id`, `session_id`, `price`, `place`, `sold`) VALUES
+(1, 3, '12.0000', 112, 1),
+(2, 1, '15.0000', 12, 1),
+(3, 1, '12.0000', 112, 1),
+(4, 1, '12.0000', 112, 1),
+(5, 1, '15.0000', 113, 1),
+(6, 1, '15.0000', 114, 1),
+(7, 1, '13.0000', 115, 1),
+(8, 1, '15.0000', 116, 1),
+(9, 1, '16.0000', 117, 1),
+(10, 1, '15.0000', 118, 1),
+(11, 2, '12.0000', 112, 1),
+(12, 2, '15.0000', 113, 1),
+(13, 2, '15.0000', 114, 0),
+(14, 2, '13.0000', 115, 1),
+(15, 2, '15.0000', 116, 1),
+(16, 2, '16.0000', 117, 0),
+(17, 2, '15.0000', 118, 1),
+(18, 3, '15.0000', 113, 1),
+(19, 3, '15.0000', 114, 0),
+(20, 3, '13.0000', 115, 1),
+(21, 3, '21.0000', 116, 1),
+(22, 3, '16.0000', 117, 1),
+(23, 3, '15.0000', 118, 1),
+(24, 4, '12.0000', 112, 1),
+(25, 4, '15.0000', 113, 1),
+(26, 4, '15.0000', 114, 0),
+(27, 4, '13.0000', 115, 1),
+(28, 4, '15.0000', 116, 1),
+(29, 4, '16.0000', 117, 1),
+(30, 5, '12.0000', 112, 1),
+(31, 5, '15.0000', 113, 1),
+(32, 5, '15.0000', 114, 0),
+(33, 5, '13.0000', 115, 1),
+(34, 5, '15.0000', 116, 1),
+(35, 5, '16.0000', 117, 0),
+(36, 7, '12.0000', 12, 1);
+
+--
+-- Индексы сохранённых таблиц
+--
+
+--
+-- Индексы таблицы `tbl_film`
+--
+ALTER TABLE `tbl_film`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `tbl_session`
+--
+ALTER TABLE `tbl_session`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `film_id` (`film_id`);
+
+--
+-- Индексы таблицы `tbl_ticet`
+--
+ALTER TABLE `tbl_ticet`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `session_id` (`session_id`);
+
+--
+-- AUTO_INCREMENT для сохранённых таблиц
+--
+
+--
+-- AUTO_INCREMENT для таблицы `tbl_film`
+--
+ALTER TABLE `tbl_film`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT для таблицы `tbl_session`
+--
+ALTER TABLE `tbl_session`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT для таблицы `tbl_ticet`
+--
+ALTER TABLE `tbl_ticet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `tbl_session`
+--
+ALTER TABLE `tbl_session`
+  ADD CONSTRAINT `tbl_session_ibfk_1` FOREIGN KEY (`film_id`) REFERENCES `tbl_film` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `tbl_ticet`
+--
+ALTER TABLE `tbl_ticet`
+  ADD CONSTRAINT `tbl_ticet_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `tbl_session` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
